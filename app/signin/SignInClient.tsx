@@ -16,7 +16,7 @@ export default function SignInClient({ googleButton }: SignInClientProps) {
 
     return (
         <div className="min-h-screen relative flex items-center justify-center overflow-hidden text-white">
-            <AuthScene isFlyingAway={!showPassword} /> // Flight animation for show and hide password
+            <AuthScene isFlyingAway={!showPassword} /> {/* Flight animation for show and hide password*/}
 
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -28,7 +28,7 @@ export default function SignInClient({ googleButton }: SignInClientProps) {
                     <p className="text-gray-400 mt-2">Enter your credentials to access your account</p>
                 </div>
 
-                //SignIn form
+                {/*SignIn form*/}
                 <form action={signIn} className="space-y-4">
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-gray-300 ml-1">Email Address</label>
@@ -69,7 +69,7 @@ export default function SignInClient({ googleButton }: SignInClientProps) {
                     </button>
                 </form>
 
-                //Option to SignIn with google
+                {/*Option to SignIn with google*/}
                 <div className="mt-6 flex flex-col gap-4">
                     <div className="relative flex py-2 items-center">
                         <div className="grow border-t border-white/10"></div>

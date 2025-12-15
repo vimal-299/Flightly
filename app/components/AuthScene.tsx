@@ -55,7 +55,7 @@ function AuthPlane({ isFlyingAway }: { isFlyingAway: boolean }) {
 export default function AuthScene({ isFlyingAway }: AuthSceneProps) {
     return (
         <div className="fixed inset-0 w-full h-full -z-10 bg-[#0a0a0a]">
-            // Stars background
+            {/* Stars background*/}
             <div className="absolute inset-0">
                 <Canvas>
                     <PerspectiveCamera makeDefault position={[0, 0, 10]} />
@@ -68,7 +68,7 @@ export default function AuthScene({ isFlyingAway }: AuthSceneProps) {
                     <AuthPlane isFlyingAway={isFlyingAway} />
                 </Canvas>
             </div>
-            // Gradient for legibility
+            {/*Gradient for legibility*/}
             <div className="absolute inset-0 bg-radial-gradient from-transparent to-[#0a0a0a]/80"></div>
         </div>
     );

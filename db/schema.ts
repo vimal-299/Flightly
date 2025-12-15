@@ -29,7 +29,7 @@ export const surgeLogs = pgTable("surge_log", {
     .notNull()
     .references(() => flights.id, { onDelete: "cascade" }),
 
-  attemptAt: timestamp("attempt_at").defaultNow().notNull(),
+  attemptAt: timestamp("attempt_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
 export const user = pgTable("user", {

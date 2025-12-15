@@ -90,7 +90,7 @@ export default function Navbar() {
                     Wallet Balance
                   </p>
                   <p className="text-xl font-bold text-green-400 flex items-center gap-1">
-                    <span className="text-sm text-green-500/50">$</span>
+                    <span className="text-sm text-green-500/50">₹</span>
                     {user?.balance?.toFixed(2) || '0.00'}
                   </p>
                 </div>

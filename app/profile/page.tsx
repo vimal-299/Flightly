@@ -12,6 +12,7 @@ export default function Profile() {
     const [loading, setLoading] = useState(true);
     const [topUpAmount, setTopUpAmount] = useState('');
     const [isTopUpLoading, setIsTopUpLoading] = useState(false);
+    const [message, setMessage] = useState<string>("")
 
     useEffect(() => {
         const fetchData = async () => {
@@ -33,6 +34,7 @@ export default function Profile() {
 
     const handleTopUp = async (e: React.FormEvent) => {
         e.preventDefault();
+        setMessage("")
         if (!topUpAmount || isNaN(Number(topUpAmount)) || Number(topUpAmount) <= 0) return;
 
         setIsTopUpLoading(true);
@@ -40,10 +42,13 @@ export default function Profile() {
             const updatedUser = await topUpWallet(Number(topUpAmount));
             setUser(updatedUser);
             setTopUpAmount('');
-            alert('Wallet topped up successfully!');
+            setMessage('Wallet topped up successfully!');
+            setTimeout(() => {
+                setMessage('');
+            }, 2000);
         } catch (error) {
             console.error('Top up failed', error);
-            alert('Failed to top up wallet');
+            alert('Failed to top up wallet! Please try again.');
         } finally {
             setIsTopUpLoading(false);
         }
@@ -92,7 +97,7 @@ export default function Profile() {
                                     )}
                                 </div>
 
-                                //user details
+                                {/*user details*/}
                                 <div className="mb-2">
                                     <h1 className="text-3xl font-bold text-white mb-1">{user.name}</h1>
                                     <p className="text-gray-400 flex items-center gap-2">
@@ -110,7 +115,7 @@ export default function Profile() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            //wallet balance
+                            {/*wallet balance*/}
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
                                 <p className="text-sm text-gray-400 uppercase font-semibold mb-2">Wallet Balance</p>
                                 <p className="text-4xl font-bold text-green-400">
@@ -118,7 +123,7 @@ export default function Profile() {
                                 </p>
                             </div>
 
-                            //total flights
+                            {/*total flights*/}
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
                                 <p className="text-sm text-gray-400 uppercase font-semibold mb-2">Total Flights</p>
                                 <p className="text-4xl font-bold text-blue-400">
@@ -126,7 +131,7 @@ export default function Profile() {
                                 </p>
                             </div>
 
-                            //favorite destination
+                            {/*favorite destination*/}
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
                                 <p className="text-sm text-gray-400 uppercase font-semibold mb-2">Favorite Destination</p>
                                 <p className="text-4xl font-bold text-indigo-400 truncate" title={stats?.favoriteDestination}>
@@ -139,7 +144,7 @@ export default function Profile() {
 
                 <div className="grid md:grid-cols-2 gap-6">
 
-                    // redirects to booking history
+                    {/*redirects to booking history*/}
                     <Link href="/history" className="group block p-6 bg-[#111] rounded-3xl border border-white/10 hover:border-blue-500/50 transition-all">
                         <div className="flex items-center justify-between mb-4">
                             <div className="p-3 bg-blue-500/10 text-blue-400 rounded-xl group-hover:bg-blue-500 group-hover:text-white transition-colors">
@@ -155,7 +160,7 @@ export default function Profile() {
                         <p className="text-gray-400">View all your past and upcoming flights</p>
                     </Link>
 
-                    // wallet top-up
+                    {/*wallet top-up*/}
                     <div className="p-6 bg-[#111] rounded-3xl border border-white/10">
                         <div className="flex items-center justify-between mb-4">
                             <div className="p-3 bg-green-500/10 text-green-400 rounded-xl">
@@ -184,6 +189,7 @@ export default function Profile() {
                                 {isTopUpLoading ? 'Adding...' : 'Add Funds'}
                             </button>
                         </form>
+                        {message && <p className="text-sm text-green-400 mt-2">{message}</p>}
                     </div>
 
                     <div className="p-6 bg-[#111] rounded-3xl border border-white/10 opacity-50 cursor-not-allowed">

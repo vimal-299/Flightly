@@ -60,7 +60,7 @@ export const generateTicketPDF = (data: TicketData) => {
     // Footer
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    doc.text('Thank you for flying with SkyBooker!', 105, 280, { align: 'center' });
+    doc.text('Thank you for flying with Flightly!', 105, 280, { align: 'center' });
 
     doc.save(`Ticket_${data.pnr}.pdf`);
 };

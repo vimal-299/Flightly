@@ -55,46 +55,24 @@ export async function getFlights(searchParams: {
     .where(conditions.length ? and(...conditions) : undefined)
     .limit(10);
 
-  const now = new Date();
-  const windowStart = new Date(now.getTime() - SURGE_WINDOW_MS);
-
-  const flightsWithPrice = await Promise.all(
-    flightRows.map(async (f) => {
-      const [{ count }] = await db
-        .select({
-          count: sql<number>`count(*)`,
-        })
-        .from(surgeLogs)
-        .where(
-          and(
-            eq(surgeLogs.flightId, f.id),
-            gte(surgeLogs.attemptAt, windowStart)
-          )
-        );
-
-      const attemptCount = Number(count);
-
-      let price = f.basePrice;
-      if (attemptCount >= ATTEMPT_THRESHOLD) {
-        price = price * 1.1;
-      }
-
-      return { ...f, price };
-    })
-  );
-
-  return flightsWithPrice;
+  return flightRows;
 }
 
 
 export async function checkSurge(flightId: number) {
   // Record attempt
-  await db.insert(surgeLogs).values({
-    flightId,
-  });
-
   const now = new Date();
   const windowStart = new Date(now.getTime() - SURGE_WINDOW_MS);
+
+  await db.insert(surgeLogs).values({
+    flightId,
+    attemptAt: now,
+  });
+
+  await db.delete(surgeLogs)
+    .where(
+      lt(surgeLogs.attemptAt, windowStart)
+    )
 
   const [{ count }] = await db
     .select({
@@ -116,7 +94,7 @@ export async function checkSurge(flightId: number) {
     priceMultiplier = 1.1;
   }
 
-  revalidatePath('/');
+  revalidatePath('/home');
   return { isSurged, recentCount: attemptCount, priceMultiplier };
 }
 

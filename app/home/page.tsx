@@ -16,7 +16,7 @@ interface flights {
   departureCity: string;
   arrivalCity: string;
   departureTime: Date;
-  price: number;
+  basePrice: number;
 }
 
 export default function Home() {
@@ -35,6 +35,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [multiplier, setMultiplier] = useState<boolean>(false)
 
   useEffect(() => { // fetches user data
     const fetchUser = async () => {
@@ -66,24 +67,30 @@ export default function Home() {
 
     try {
       const { priceMultiplier } = await checkSurge(flight.id);
+      if (priceMultiplier > 1) {
+        setMultiplier(true)
+      }
+      else {
+        setMultiplier(false)
+      }
 
       const newPrice = flight.basePrice * priceMultiplier;
 
       setSelectedFlight((prev: any) => ({
         ...prev,
-        price: newPrice
+        basePrice: newPrice
       }));
-
-      setFlights(prevFlights =>
-        prevFlights.map(f =>
-          f.id === flight.id ? { ...f, price: newPrice } : f
-        )
-      );
 
     } catch (err) {
       console.error("Error checking surge", err)
     }
   };
+
+  const handleBookingModalClose = () => {
+    setIsModalOpen(false)
+    setSelectedFlight(null)
+    setMultiplier(false)
+  }
 
   const handleBooking = async () => {
     setError('')
@@ -104,7 +111,7 @@ export default function Home() {
         flightId: selectedFlight.id,
         passengerName: user.name,
         passengerEmail: user.email,
-        pricePaid: selectedFlight.price,
+        pricePaid: selectedFlight.basePrice,
         pnr: pnr,
       });
 
@@ -120,7 +127,7 @@ export default function Home() {
           flightId: selectedFlight.id,
           from: selectedFlight.departureCity,
           to: selectedFlight.arrivalCity,
-          price: selectedFlight.price,
+          price: selectedFlight.basePrice,
           date: selectedFlight.departureTime,
           pnr: pnr,
         });
@@ -284,7 +291,7 @@ export default function Home() {
                         <div className="text-right pl-6 md:border-l border-white/10">
                           <p className="text-sm text-gray-400 mb-1">Price starting from</p>
                           <p className="text-4xl font-bold text-white mb-4 tracking-tight">
-                            ₹{flight.price.toFixed(0)}
+                            ₹{flight.basePrice.toFixed(0)}
                           </p>
                           <button
                             onClick={() => openBookingModal(flight)}
@@ -329,7 +336,7 @@ export default function Home() {
                   Confirm Booking
                 </h2>
                 <button
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => handleBookingModalClose()}
                   className="text-white/80 hover:text-white transition-colors"
                 >
                   ✕
@@ -337,12 +344,12 @@ export default function Home() {
               </div>
 
               <div className="p-6">
-                {selectedFlight.price > selectedFlight.basePrice && (
+                {multiplier && (
                   <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 mb-6 flex items-start gap-3">
                     <TrendingUp className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-sm font-semibold text-amber-500">High Demand!</p>
-                      <p className="text-xs text-gray-400">Fares have increased by 10% due to surge in demand.</p>
+                      <p className="text-xs text-gray-400">Fares have increased due to high demand.</p>
                     </div>
                   </div>
                 )}
@@ -371,29 +378,29 @@ export default function Home() {
                 <div className="mb-8 p-4 bg-white/5 rounded-xl border border-white/10">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-400">Route Price</span>
-                    <span className="text-white font-mono">₹{selectedFlight.price.toFixed(0)}</span>
+                    <span className="text-white font-mono">₹{selectedFlight.basePrice.toFixed(0)}</span>
                   </div>
                   <div className="flex justify-between items-center pt-2 border-t border-white/10">
                     <span className="text-gray-400">Wallet Balance</span>
-                    <span className={`font-bold ${user?.balance >= selectedFlight.price ? 'text-green-500' : 'text-red-500'}`}>
+                    <span className={`font-bold ${user?.balance >= selectedFlight.basePrice ? 'text-green-500' : 'text-red-500'}`}>
                       ₹{user?.balance?.toFixed(0) || '0'}
                     </span>
                   </div>
-                  {user?.balance < selectedFlight.price && (
+                  {user?.balance < selectedFlight.basePrice && (
                     <p className="text-red-500 text-xs mt-2 text-right">Insufficient Balance</p>
                   )}
                 </div>
 
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setIsModalOpen(false)}
+                    onClick={() => handleBookingModalClose()}
                     className="flex-1 px-4 py-3 border border-white/10 text-gray-300 font-medium rounded-xl hover:bg-white/5 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleBooking}
-                    disabled={bookingLoading || user?.balance < selectedFlight.price}
+                    disabled={bookingLoading || user?.balance < selectedFlight.basePrice}
                     className="flex-1 px-4 py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
                   >
                     {bookingLoading ? 'Processing...' : 'Confirm & Pay'}

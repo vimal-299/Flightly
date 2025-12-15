@@ -16,7 +16,7 @@ export default function SignUpClient({ googleButton }: SignUpClientProps) {
 
     return (
         <div className="h-screen relative flex items-center justify-center overflow-hidden text-white">
-            <AuthScene isFlyingAway={!showPassword} /> //Flight animation for show and hide password
+            <AuthScene isFlyingAway={!showPassword} /> {/*Flight animation for show and hide password*/}
 
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -28,7 +28,7 @@ export default function SignUpClient({ googleButton }: SignUpClientProps) {
                     <p className="text-gray-400 mt-2">Create an account to start your journey</p>
                 </div>
 
-                //SignUp form
+                {/*SignUp form*/}
                 <form action={signUp} className="space-y-4">
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-gray-300 ml-1">Full Name</label>
@@ -80,7 +80,7 @@ export default function SignUpClient({ googleButton }: SignUpClientProps) {
                     </button>
                 </form>
 
-                //Option for signin with google
+                {/*Option for signin with google*/}
                 <div className="mt-6 flex flex-col gap-4">
                     <div className="relative flex py-2 items-center">
                         <div className="grow border-t border-white/10"></div>
@@ -91,7 +91,7 @@ export default function SignUpClient({ googleButton }: SignUpClientProps) {
                     {googleButton}
                 </div>
 
-                //If user already has an account
+                {/*If user already has an account*/}
                 <p className="mt-8 text-center text-sm text-gray-400">
                     Already have an account? <Link href="/signin" className="text-blue-400 hover:text-blue-300 font-medium">Log in</Link>
                 </p>

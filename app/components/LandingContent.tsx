@@ -19,12 +19,10 @@ export default function LandingContent({ isLoggedIn }: LandingContentProps) {
     const [showContent, setShowContent] = useState(false);
 
     const handleIntroComplete = () => {
-        // setPhase('idle');
         setShowContent(true);
     };
 
     const handleNavigation = (path: string, type: 'signin' | 'signup') => {
-        // Correctly formatted template string
         const nextPhase = `exit-${type}`;
         setPhase(nextPhase as any);
 
