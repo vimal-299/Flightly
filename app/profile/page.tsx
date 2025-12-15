@@ -118,15 +118,15 @@ export default function Profile() {
                             {/*wallet balance*/}
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
                                 <p className="text-sm text-gray-400 uppercase font-semibold mb-2">Wallet Balance</p>
-                                <p className="text-4xl font-bold text-green-400">
-                                    ${user.balance?.toFixed(2)}
+                                <p className="text-3xl font-bold text-green-400">
+                                    ₹{user.balance?.toFixed(2)}
                                 </p>
                             </div>
 
                             {/*total flights*/}
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
                                 <p className="text-sm text-gray-400 uppercase font-semibold mb-2">Total Flights</p>
-                                <p className="text-4xl font-bold text-blue-400">
+                                <p className="text-3xl font-bold text-blue-400">
                                     {stats?.totalFlights || 0}
                                 </p>
                             </div>
@@ -134,7 +134,7 @@ export default function Profile() {
                             {/*favorite destination*/}
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
                                 <p className="text-sm text-gray-400 uppercase font-semibold mb-2">Favorite Destination</p>
-                                <p className="text-4xl font-bold text-indigo-400 truncate" title={stats?.favoriteDestination}>
+                                <p className="text-3xl font-bold text-indigo-400 truncate" title={stats?.favoriteDestination}>
                                     {stats?.favoriteDestination || 'N/A'}
                                 </p>
                             </div>

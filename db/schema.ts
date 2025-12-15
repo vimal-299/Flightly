@@ -8,6 +8,7 @@ export const flights = pgTable("flight", {
   arrivalCity: varchar("arrival_city", { length: 255 }).notNull(),
   basePrice: real("base_price").notNull(),
   departureTime: timestamp("departure_time", { withTimezone: true }).notNull(),
+  arrivalTime: timestamp("arrival_time", { withTimezone: true }).notNull(),
 });
 
 export const bookings = pgTable("booking", {

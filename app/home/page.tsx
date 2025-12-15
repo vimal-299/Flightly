@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getFlights, createBooking, checkSurge } from '@/app/actions/flights';
 import Navbar from "@/app/components/Navbar";
 import { getUserData } from '@/app/actions/user';
 import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/navigation';
 import { generateTicketPDF } from '@/utils/generatePDF';
-import { TrendingUp, Plane, Calendar, MapPin, Clock } from 'lucide-react';
+import { TrendingUp, Plane, Calendar, MapPin, Clock, ArrowUpDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface flights {
@@ -16,6 +16,7 @@ interface flights {
   departureCity: string;
   arrivalCity: string;
   departureTime: Date;
+  arrivalTime: Date;
   basePrice: number;
 }
 
@@ -36,6 +37,33 @@ export default function Home() {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [multiplier, setMultiplier] = useState<boolean>(false)
+  const [sortBy, setSortBy] = useState<string>('price-asc');
+
+  const calculateDuration = (start: Date, end: Date) => {
+    const diff = new Date(end).getTime() - new Date(start).getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}h ${minutes}m`;
+  };
+
+  const sortedFlights = useMemo(() => {
+    if (!flights.length) return [];
+
+    return [...flights].sort((a, b) => {
+      switch (sortBy) {
+        case 'price-asc':
+          return a.basePrice - b.basePrice;
+        case 'price-desc':
+          return b.basePrice - a.basePrice;
+        case 'time-asc':
+          return new Date(a.departureTime).getTime() - new Date(b.departureTime).getTime();
+        case 'time-desc':
+          return new Date(b.departureTime).getTime() - new Date(a.departureTime).getTime();
+        default:
+          return 0;
+      }
+    });
+  }, [flights, sortBy]);
 
   useEffect(() => { // fetches user data
     const fetchUser = async () => {
@@ -177,7 +205,6 @@ export default function Home() {
             className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-2xl flex flex-col md:flex-row gap-4 items-end"
           >
             <div className="flex-1 w-full space-y-2">
-              <label className="block text-sm font-medium text-gray-400 ml-1">From</label>
               <div className="relative group">
                 <MapPin className="absolute left-4 top-3.5 w-5 h-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                 <input
@@ -191,7 +218,6 @@ export default function Home() {
             </div>
 
             <div className="flex-1 w-full space-y-2">
-              <label className="block text-sm font-medium text-gray-400 ml-1">To</label>
               <div className="relative group">
                 <MapPin className="absolute left-4 top-3.5 w-5 h-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                 <input
@@ -205,7 +231,6 @@ export default function Home() {
             </div>
 
             <div className="flex-1 w-full space-y-2">
-              <label className="block text-sm font-medium text-gray-400 ml-1">Date</label>
               <div className="relative group">
                 <Calendar className="absolute left-4 top-3.5 w-5 h-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                 <input
@@ -243,9 +268,27 @@ export default function Home() {
               transition={{ duration: 0.5 }}
               className="w-full max-w-5xl mx-auto mt-12 pb-20"
             >
-              {flights.length > 0 ? (
+              <div className="flex justify-end mb-6">
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ArrowUpDown className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="appearance-none bg-white/5 border border-white/10 text-white pl-10 pr-8 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer hover:bg-white/10 transition-colors"
+                  >
+                    <option value="price-asc" className="bg-[#111] text-white">Price: Low to High</option>
+                    <option value="price-desc" className="bg-[#111] text-white">Price: High to Low</option>
+                    <option value="time-asc" className="bg-[#111] text-white">Departure: Earliest</option>
+                    <option value="time-desc" className="bg-[#111] text-white">Departure: Latest</option>
+                  </select>
+                </div>
+              </div>
+
+              {sortedFlights.length > 0 ? (
                 <div className="grid gap-6">
-                  {flights.map((flight, index) => (
+                  {sortedFlights.map((flight, index) => (
                     <motion.div
                       key={flight.id}
                       initial={{ opacity: 0, x: -20 }}
@@ -268,11 +311,14 @@ export default function Home() {
                                 {new Date(flight.departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </p>
                               <p className="text-gray-400 font-medium">{flight.departureCity}</p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {new Date(flight.departureTime).toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}
+                              </p>
                             </div>
 
                             <div className="flex flex-col items-center flex-1">
                               <span className="text-xs text-gray-500 mb-2 flex items-center gap-1">
-                                <Clock className="w-3 h-3" /> 2h 30m
+                                <Clock className="w-3 h-3" /> {calculateDuration(flight.departureTime, flight.arrivalTime)}
                               </span>
                               <div className="w-full h-[2px] bg-linear-to-r from-transparent via-gray-600 to-transparent relative">
                                 <Plane className="w-4 h-4 text-blue-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90" />
@@ -281,9 +327,12 @@ export default function Home() {
 
                             <div className="text-center">
                               <p className="text-3xl font-bold text-white mb-1">
-                                {new Date(new Date(flight.departureTime).getTime() + 2.5 * 60 * 60 * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                {new Date(flight.arrivalTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </p>
                               <p className="text-gray-400 font-medium">{flight.arrivalCity}</p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {new Date(flight.arrivalTime).toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short' })}
+                              </p>
                             </div>
                           </div>
                         </div>

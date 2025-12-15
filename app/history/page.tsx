@@ -69,7 +69,7 @@ export default function BookingsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                 >
-                    <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-clip-text text-transparent bg-linear-to-r from-blue-400 via-indigo-400 to-purple-400">
+                    <h1 className="text-3xl md:text-5xl font-bold mb-2 bg-clip-text text-transparent h-15 bg-linear-to-r from-blue-400 via-indigo-400 to-purple-400">
                         My Journey Log
                     </h1>
                     <p className="text-gray-400 mb-10 text-lg">Your travel history and upcoming adventures.</p>

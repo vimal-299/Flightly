@@ -1,9 +1,11 @@
-import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
-import {schema} from './schema'
+import 'dotenv/config';
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
 
-if (!process.env.DATABASE_URL){throw new Error("Database url not found in .env")}
+if (!process.env.DATABASE_URL) {
+    throw new Error("Database url not found in .env");
+}
 
-const client = postgres(process.env.DATABASE_URL)
+const client = postgres(process.env.DATABASE_URL);
 
-export const db = drizzle(client, { schema })
+export const db = drizzle(client);

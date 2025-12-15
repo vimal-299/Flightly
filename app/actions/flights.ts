@@ -24,6 +24,7 @@ export async function getFlights(searchParams: {
   date?: string;
 }) {
   const conditions = [];
+  const today = new Date();
 
   if (searchParams.from) {
     conditions.push(
@@ -48,6 +49,11 @@ export async function getFlights(searchParams: {
     );
 
   }
+  else {
+    conditions.push(
+      gte(flights.departureTime, today)
+    )
+  }
 
   const flightRows = await db
     .select()
@@ -55,6 +61,10 @@ export async function getFlights(searchParams: {
     .where(conditions.length ? and(...conditions) : undefined)
     .limit(10);
 
+  // await db.delete(flights)
+  //   .where(
+  //     lt(flights.departureTime, today)
+  //   )
   return flightRows;
 }
 
