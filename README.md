@@ -2,8 +2,6 @@
 
 Flightly is a cutting-edge flight booking web application designed to provide a seamless and visually innovative experience for users. Built with the latest web technologies, it features dynamic pricing, 3D visualizations, and secure wallet integration.
 
-![Flightly Home Screen](/plane.glb) <!-- Placeholder for a screenshot if available, otherwise just text description or remove -->
-
 ## 🚀 Features
 
 -   **Flight Search**: Search for flights by departure city, arrival city, and date.
@@ -77,7 +75,28 @@ Seed the database with initial flight data :
 npm run dev
 ```
 
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## 🐳 Docker Support
+
+To run the application in a Docker container:
+
+### 1. Build the Image
+
+```bash
+docker build -t flightly .
+```
+
+### 2. Run the Container
+
+Ensure your `.env` file is present in the root directory.
+
+```bash
+docker run -p 3000:3000 --env-file .env flightly
+```
+
+The app will be accessible at [http://localhost:3000](http://localhost:3000).
 
 ## 🏗️ Project Structure
 
