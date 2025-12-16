@@ -77,9 +77,7 @@ export default function Home() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setLoading(true);
-    setHasSearched(true);
 
     try {
       const results = await getFlights({ from, to, date });
@@ -88,6 +86,7 @@ export default function Home() {
       console.error('Error fetching flights:', error);
     } finally {
       setLoading(false);
+    setHasSearched(true);
     }
   };
 
