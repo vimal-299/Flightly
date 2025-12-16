@@ -61,6 +61,8 @@ export async function getFlights(searchParams: {
     .where(conditions.length ? and(...conditions) : undefined)
     .limit(10);
 
+  // function to delete the older flights from database
+
   // await db.delete(flights)
   //   .where(
   //     lt(flights.departureTime, today)
@@ -79,11 +81,13 @@ export async function checkSurge(flightId: number) {
     attemptAt: now,
   });
 
+  //deleting older surge records from database 
   await db.delete(surgeLogs)
     .where(
       lt(surgeLogs.attemptAt, windowStart)
     )
 
+  // counting the number of times the flight has been viewed
   const [{ count }] = await db
     .select({
       count: sql<number>`count(*)`,
@@ -177,6 +181,7 @@ export async function getBookings() {
     return [];
   }
 
+  // fetch all booking of the user
   const rows = await db
     .select({
       booking: bookings,

@@ -13,6 +13,20 @@ interface SignUpClientProps {
 
 export default function SignUpClient({ googleButton }: SignUpClientProps) {
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState<string>("");
+
+    const handleSignUp = async (formData: FormData) => {
+        setError("");
+        try {
+            const res = await signUp(formData);
+            if (res && !res.success) {
+                setError(res.error || "Signup failed");
+            }
+        } catch (error) {
+            console.log("Signup error:", error);
+            setError("Something went wrong. Please try again.");
+        }
+    };
 
     return (
         <div className="h-screen relative flex items-center justify-center overflow-hidden text-white">
@@ -29,7 +43,7 @@ export default function SignUpClient({ googleButton }: SignUpClientProps) {
                 </div>
 
                 {/*SignUp form*/}
-                <form action={signUp} className="space-y-4">
+                <form action={handleSignUp} className="space-y-4">
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-gray-300 ml-1">Full Name</label>
                         <input
@@ -78,6 +92,7 @@ export default function SignUpClient({ googleButton }: SignUpClientProps) {
                     >
                         Sign Up
                     </button>
+                    {error && <p className="text-red-500 mt-2 text-center text-sm">{error}</p>}
                 </form>
 
                 {/*Option for signin with google*/}

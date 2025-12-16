@@ -5,6 +5,7 @@ import { getUserData, getUserStats, topUpWallet } from '@/app/actions/user';
 import Navbar from '@/app/components/Navbar';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import SmallPlane3D from '@/app/components/SmallPlane3D';
 
 export default function Profile() {
     const [user, setUser] = useState<any>(null);
@@ -72,10 +73,19 @@ export default function Profile() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-white">
+        <div className="min-h-screen bg-black text-white">
             <Navbar />
+            <SmallPlane3D />
+            <div className="fixed inset-0 z-0 select-none">
+                <img
+                    src="/worldmap.svg"
+                    alt="World Map"
+                    className="w-screen h-screen object-cover opacity-20"
+                />
+                <div className="absolute inset-0 bg-linear-to-b from-black/50 via-transparent to-black/50" />
+            </div>
 
-            <main className="max-w-4xl mx-auto px-4 py-8 mt-10">
+            <main className="max-w-4xl mx-auto px-4 py-8 mt-10 relative z-10">
                 <div className="bg-[#111] rounded-3xl border border-white/10 overflow-hidden mb-8">
                     <div className="h-32 bg-linear-to-r from-blue-900 via-indigo-900 to-purple-900 relative overflow-hidden">
                         <div className="absolute inset-0 bg-black/20"></div>

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FLightly",
+  title: "Flightly",
   description: "A platform to book flight tickets",
 };
 

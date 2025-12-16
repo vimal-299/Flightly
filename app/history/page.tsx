@@ -6,6 +6,7 @@ import { Download, Calendar, MapPin, Plane, Clock } from 'lucide-react';
 import { generateTicketPDF } from '@/utils/generatePDF';
 import { getBookings } from '@/app/actions/flights';
 import { motion, AnimatePresence } from 'framer-motion';
+import SmallPlane3D from '@/app/components/SmallPlane3D';
 
 interface Booking {
     bookingDate: string;
@@ -60,10 +61,19 @@ export default function BookingsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-blue-500/30">
+        <div className="min-h-screen bg-black text-white selection:bg-blue-500/30">
             <Navbar />
+            <SmallPlane3D /> {/* 3D model of plane at bottom left */}
+            <div className="fixed inset-0 z-0 select-none">
+                <img
+                    src="/worldmap.svg"
+                    alt="World Map"
+                    className="w-screen h-screen object-cover opacity-20"
+                />
+                <div className="absolute inset-0 bg-linear-to-b from-black/50 via-transparent to-black/50" />
+            </div>
 
-            <main className="container mx-auto px-4 py-8 pt-28">
+            <main className="container mx-auto px-4 py-8 pt-28 relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -85,6 +95,7 @@ export default function BookingsPage() {
                         animate={{ opacity: 1 }}
                         className="grid gap-6"
                     >
+                        {/*list all bookings */}
                         {bookings.map((booking, index) => (
                             <motion.div
                                 key={booking.id}
@@ -106,7 +117,7 @@ export default function BookingsPage() {
 
                                         <div className="flex items-center gap-8 md:gap-12 mb-4">
                                             <div>
-                                                <p className="text-2xl font-bold text-white">{booking.flight.departureCity}</p>
+                                                <p className="text-lg md:text-2xl font-bold text-white">{booking.flight.departureCity}</p>
                                                 <p className="text-sm text-gray-500">Departure</p>
                                             </div>
 
@@ -118,13 +129,13 @@ export default function BookingsPage() {
                                             </div>
 
                                             <div className="text-right">
-                                                <p className="text-2xl font-bold text-white">{booking.flight.arrivalCity}</p>
+                                                <p className="text-lg md:text-2xl font-bold text-white">{booking.flight.arrivalCity}</p>
                                                 <p className="text-sm text-gray-500">Arrival</p>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-6 text-sm text-gray-400">
-                                            <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-6 text-sm text-gray-400 ">
+                                            <div className="flex items-center gap-2 ">
                                                 <Calendar className="w-4 h-4 text-blue-400" />
                                                 {new Date(booking.flight.departureTime).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                                             </div>
@@ -137,7 +148,7 @@ export default function BookingsPage() {
 
                                     <div className="flex items-center justify-between md:flex-col md:items-end gap-2 md:gap-6 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-8 min-w-[180px]">
                                         <div className="text-right">
-                                            <p className="text-xs text-gray-500 mb-1">Total Paid</p>
+                                            <p className="text-xs text-center text-gray-500 mb-1">Total Paid</p>
                                             <p className="text-3xl font-bold text-white tracking-tight">₹{booking.pricePaid.toFixed(0)}</p>
                                         </div>
 

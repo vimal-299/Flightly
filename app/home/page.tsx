@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { generateTicketPDF } from '@/utils/generatePDF';
 import { TrendingUp, Plane, Calendar, MapPin, Clock, ArrowUpDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SmallPlane3D from '@/app/components/SmallPlane3D';
 
 interface flights {
   id: number;
@@ -46,6 +47,7 @@ export default function Home() {
     return `${hours}h ${minutes}m`;
   };
 
+  // function to sort flights based on filters applied
   const sortedFlights = useMemo(() => {
     if (!flights.length) return [];
 
@@ -120,6 +122,7 @@ export default function Home() {
     setMultiplier(false)
   }
 
+  //function to book a flight
   const handleBooking = async () => {
     setError('')
     if (!selectedFlight) {
@@ -179,6 +182,17 @@ export default function Home() {
   return (
     <div className="min-h-screen relative overflow-hidden text-white selection:bg-blue-500/30">
       <Navbar />
+      <SmallPlane3D />
+
+      {/*background*/}
+      <div className="fixed inset-0 z-0">
+        <img
+          src="/worldmap.svg"
+          alt="World Map"
+          className="w-screen h-screen object-cover opacity-20"
+        />
+        <div className="absolute inset-0 bg-linear-to-b from-black/50 via-transparent to-black/50" />
+      </div>
 
       <main className="relative z-10 container mx-auto px-4 pt-20">
         <motion.div
@@ -196,7 +210,7 @@ export default function Home() {
             Experience the Future <br /> of Flight Booking
           </motion.h1>}
 
-
+          {/*search bar*/}
           <motion.form
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -268,6 +282,7 @@ export default function Home() {
               transition={{ duration: 0.5 }}
               className="w-full max-w-5xl mx-auto mt-12 pb-20"
             >
+              {/*search filters*/}
               <div className="flex justify-end mb-6">
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -286,6 +301,7 @@ export default function Home() {
                 </div>
               </div>
 
+              {/*show available flights*/}
               {sortedFlights.length > 0 ? (
                 <div className="grid gap-6">
                   {sortedFlights.map((flight, index) => (
@@ -307,7 +323,7 @@ export default function Home() {
 
                           <div className="flex items-center gap-12">
                             <div className="text-center">
-                              <p className="text-3xl font-bold text-white mb-1">
+                              <p className="text-lg md:text-3xl font-bold text-white mb-1">
                                 {new Date(flight.departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </p>
                               <p className="text-gray-400 font-medium">{flight.departureCity}</p>
@@ -326,7 +342,7 @@ export default function Home() {
                             </div>
 
                             <div className="text-center">
-                              <p className="text-3xl font-bold text-white mb-1">
+                              <p className="text-lg md:text-3xl font-bold text-white mb-1">
                                 {new Date(flight.arrivalTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </p>
                               <p className="text-gray-400 font-medium">{flight.arrivalCity}</p>
@@ -337,11 +353,13 @@ export default function Home() {
                           </div>
                         </div>
 
-                        <div className="text-right pl-6 md:border-l border-white/10">
-                          <p className="text-sm text-gray-400 mb-1">Price starting from</p>
-                          <p className="text-4xl font-bold text-white mb-4 tracking-tight">
-                            ₹{flight.basePrice.toFixed(0)}
-                          </p>
+                        <div className="w-full md:w-auto flex flex-row md:flex-col justify-between md:justify-start items-center md:items-end md:text-right pl-0 md:pl-6 md:border-l border-white/10">
+                          <div>
+                            <p className="text-sm text-gray-400 mb-1">Starting from</p>
+                            <p className="text-2xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+                              ₹{flight.basePrice.toFixed(0)}
+                            </p>
+                          </div>
                           <button
                             onClick={() => openBookingModal(flight)}
                             className="px-8 py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-all active:scale-95 shadow-lg shadow-white/5"
@@ -403,6 +421,7 @@ export default function Home() {
                   </div>
                 )}
 
+                {/*showing flight details*/}
                 <div className="mb-6 space-y-4">
                   <div className="flex justify-between items-baseline">
                     <p className="text-sm text-gray-400">Flight</p>
@@ -435,6 +454,7 @@ export default function Home() {
                       ₹{user?.balance?.toFixed(0) || '0'}
                     </span>
                   </div>
+                  {/*checking user balance*/}
                   {user?.balance < selectedFlight.basePrice && (
                     <p className="text-red-500 text-xs mt-2 text-right">Insufficient Balance</p>
                   )}

@@ -41,9 +41,6 @@ function Plane({ phase, onIntroComplete }: { phase: string, onIntroComplete?: ()
             }
         } else if (phase === 'idle') {
             // Static hover at bottom left
-            // Target position: Bottom Left relative to camera
-            // Camera is at [0, 0, 10].
-            // Roughly x=-5, y=-3 seems right.
             scale.current = 0.25;
             const targetX = -5;
             const targetY = -1.5;
@@ -67,7 +64,6 @@ function Plane({ phase, onIntroComplete }: { phase: string, onIntroComplete?: ()
             scale.current = THREE.MathUtils.lerp(scale.current, 0.25, 0.1);
 
         } else if (phase.startsWith('exit')) {
-            // ... existing exit logic ...
             const speed = 8;
             ref.current.position.x += delta * 30;
             ref.current.position.y += delta * 5;

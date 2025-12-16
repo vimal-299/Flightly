@@ -24,8 +24,8 @@ function AuthPlane({ isFlyingAway }: { isFlyingAway: boolean }) {
             targetRot.current.set(-0.5, 0, 0); // Bank right
         } else {
             // Return to bottom left
-            targetPos.current.set(-4.5, -1.75, 2);
-            targetRot.current.set(0, 0, 0);
+            targetPos.current.set(-5.5, -1.75, 2);
+            targetRot.current.set(0, 3, 0);
         }
 
         // Smooth interpolation

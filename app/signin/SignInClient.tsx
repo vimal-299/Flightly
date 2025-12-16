@@ -13,6 +13,19 @@ interface SignInClientProps {
 
 export default function SignInClient({ googleButton }: SignInClientProps) {
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState<string>("")
+
+    const handleSignIn = async (formData: FormData) => {
+        setError("")
+        try {
+            const res = await signIn(formData)
+            if (res && !res.success) {
+                setError(res.error)
+            }
+        } catch (error) {
+            console.log("error is :", error)
+        }
+    }
 
     return (
         <div className="min-h-screen relative flex items-center justify-center overflow-hidden text-white">
@@ -29,7 +42,7 @@ export default function SignInClient({ googleButton }: SignInClientProps) {
                 </div>
 
                 {/*SignIn form*/}
-                <form action={signIn} className="space-y-4">
+                <form action={handleSignIn} className="space-y-4">
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-gray-300 ml-1">Email Address</label>
                         <input
@@ -67,6 +80,7 @@ export default function SignInClient({ googleButton }: SignInClientProps) {
                     >
                         Sign In
                     </button>
+                    {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
                 </form>
 
                 {/*Option to SignIn with google*/}
